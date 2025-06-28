@@ -1,6 +1,8 @@
+import type { HIGHLIGHT_COLORS } from "./constants";
+
 export interface SortStep {
   array: number[];
-  highlights: { [key: number]: string };
+  highlights: { [key: number]: keyof typeof HIGHLIGHT_COLORS };
 }
 
 /**
@@ -19,7 +21,7 @@ export function swap(arr: number[], i: number, j: number): void {
  * @param highlights - Object mapping indices to highlight types
  * @returns SortStep object with array copy and highlights
  */
-export function createSortStep(arr: number[], highlights: { [key: number]: string } = {}): SortStep {
+export function createSortStep(arr: number[], highlights: { [key: number]: keyof typeof HIGHLIGHT_COLORS } = {}): SortStep {
   return {
     array: [...arr],
     highlights

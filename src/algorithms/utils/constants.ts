@@ -1,3 +1,10 @@
+export type AlgorithmName =
+  | "bubbleSort"
+  | "selectionSort"
+  | "insertionSort"
+  | "mergeSort"
+  | "quickSort";
+
 export const HIGHLIGHT_COLORS = {
   checking: "#facc15", // yellow-400
   swapping: "#ef4444", // red-500
@@ -22,7 +29,7 @@ export const ALGORITHM_NAMES = {
   QUICK_SORT: "quickSort",
 } as const;
 
-export const ALGORITHM_DISPLAY_NAMES = {
+export const ALGORITHM_DISPLAY_NAMES: Record<AlgorithmName, string> = {
   [ALGORITHM_NAMES.BUBBLE_SORT]: "Bubble Sort",
   [ALGORITHM_NAMES.SELECTION_SORT]: "Selection Sort",
   [ALGORITHM_NAMES.INSERTION_SORT]: "Insertion Sort",
