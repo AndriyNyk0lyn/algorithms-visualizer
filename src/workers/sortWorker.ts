@@ -5,6 +5,8 @@ import {
   insertionSort,
   mergeSort,
   quickSort,
+  heapSort,
+  shellSort,
 } from "../algorithms/sorting";
 
 const algorithms = {
@@ -13,6 +15,8 @@ const algorithms = {
   insertionSort,
   mergeSort,
   quickSort,
+  heapSort,
+  shellSort,
 } as const;
 
 let currentGenerator: Generator<SortStep, void, unknown> | null = null;

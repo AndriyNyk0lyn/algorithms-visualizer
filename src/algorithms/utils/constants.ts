@@ -3,7 +3,9 @@ export type AlgorithmName =
   | "selectionSort"
   | "insertionSort"
   | "mergeSort"
-  | "quickSort";
+  | "quickSort"
+  | "heapSort"
+  | "shellSort";
 
 export const HIGHLIGHT_COLORS = {
   checking: "#facc15", // yellow-400
@@ -27,6 +29,8 @@ export const ALGORITHM_NAMES = {
   INSERTION_SORT: "insertionSort",
   MERGE_SORT: "mergeSort",
   QUICK_SORT: "quickSort",
+  HEAP_SORT: "heapSort",
+  SHELL_SORT: "shellSort",
 } as const;
 
 export const ALGORITHM_DISPLAY_NAMES: Record<AlgorithmName, string> = {
@@ -35,6 +39,8 @@ export const ALGORITHM_DISPLAY_NAMES: Record<AlgorithmName, string> = {
   [ALGORITHM_NAMES.INSERTION_SORT]: "Insertion Sort",
   [ALGORITHM_NAMES.MERGE_SORT]: "Merge Sort",
   [ALGORITHM_NAMES.QUICK_SORT]: "Quick Sort",
+  [ALGORITHM_NAMES.HEAP_SORT]: "Heap Sort",
+  [ALGORITHM_NAMES.SHELL_SORT]: "Shell Sort",
 } as const;
 
 export const ALGORITHM_OPTIONS = Object.entries(ALGORITHM_DISPLAY_NAMES).map(
