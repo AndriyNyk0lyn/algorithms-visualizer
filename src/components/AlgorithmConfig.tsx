@@ -66,6 +66,9 @@ const AlgorithmConfig = () => {
     defaultValues,
   });
 
+  const watchedSpeed = form.watch("speed");
+  const watchedArraySize = form.watch("arraySize");
+
   const onSubmit = (data: FormData) => {
     const arr = generateRandomArray(data.arraySize);
     start(data.algorithm as AlgorithmName, arr, data.speed);
@@ -73,17 +76,16 @@ const AlgorithmConfig = () => {
 
   const onReset = () => {
     stop();
-    if (canvasRef.current)
-      dropArray(canvasRef.current, defaultValues.arraySize);
+    if (canvasRef.current) dropArray(canvasRef.current, watchedArraySize);
   };
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    dropArray(canvasRef.current, form.getValues("arraySize"));
-  }, [form.watch("arraySize")]);
-
-  const watchedSpeed = form.watch("speed");
-  const watchedArraySize = form.watch("arraySize");
+    if (isNaN(watchedArraySize)) return;
+    if (watchedArraySize < ALGORITHM_CONFIG.MIN_ARRAY_SIZE) return;
+    if (watchedArraySize > ALGORITHM_CONFIG.MAX_ARRAY_SIZE) return;
+    dropArray(canvasRef.current, watchedArraySize);
+  }, [watchedArraySize]);
 
   return (
     <div className="mx-auto max-w-5xl mt-5">
@@ -128,17 +130,19 @@ const AlgorithmConfig = () => {
                     name="arraySize"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Array Size: {watchedArraySize}</FormLabel>
+                        <FormLabel>
+                          Array Size:{" "}
+                          {isNaN(watchedArraySize) ? "-" : watchedArraySize}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             placeholder="Enter array size"
                             {...field}
-                            onChange={(e) =>
-                              field.onChange(
-                                Number.parseInt(e.target.value) || 0
-                              )
-                            }
+                            onChange={(e) => {
+                              const value = Number.parseInt(e.target.value);
+                              field.onChange(isNaN(value) ? '' : value);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />

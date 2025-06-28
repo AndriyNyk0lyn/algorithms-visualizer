@@ -1,4 +1,4 @@
-import type { AlgorithmName, SortStep } from "@/algorithms";
+import { ALGORITHM_CONFIG, type AlgorithmName, type SortStep } from "@/algorithms";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 interface WorkerRequest {
@@ -40,7 +40,7 @@ export function useSortWorker(
                 command: "step",
               } as WorkerRequest);
             }
-          }, 101 - speedRef.current);
+          }, ALGORITHM_CONFIG.SPEED_MULTIPLIER - speedRef.current);
         } else if (e.data.status === "done") {
           isSortingRef.current = false;
           setIsSorting(false);
