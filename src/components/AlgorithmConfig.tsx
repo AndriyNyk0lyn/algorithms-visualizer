@@ -132,9 +132,9 @@ const AlgorithmConfig = () => {
                         <FormControl>
                           <div className="px-2 py-4">
                             <Slider
-                              min={1}
-                              max={100}
-                              step={1}
+                              min={ALGORITHM_CONFIG.MIN_SPEED}
+                              max={ALGORITHM_CONFIG.MAX_SPEED}
+                              step={ALGORITHM_CONFIG.SPEED_STEP}
                               value={[field.value]}
                               onValueChange={(value) =>
                                 field.onChange(value[0])
