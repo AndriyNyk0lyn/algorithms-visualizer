@@ -15,6 +15,8 @@ const algorithms = {
   quickSort,
 } as const;
 
+let currentGenerator: Generator<SortStep, void, unknown> | null = null;
+
 self.onmessage = (
   e: MessageEvent<{
     command: "start" | "step";
@@ -23,17 +25,22 @@ self.onmessage = (
   }>
 ) => {
   if (e.data.command === "start") {
-    const gen = algorithms[e.data.algorithm](e.data.array.slice());
-    postNext(gen);
+    currentGenerator = algorithms[e.data.algorithm](e.data.array.slice());
+    postNext();
+  } else if (e.data.command === "step") {
+    postNext();
   }
 };
 
-function postNext(gen: Generator<SortStep, void, unknown>): void {
-  const result = gen.next();
+function postNext(): void {
+  if (!currentGenerator) return;
+
+  const result = currentGenerator.next();
+
   if (result.done) {
     self.postMessage({ status: "done" });
+    currentGenerator = null;
   } else {
     self.postMessage({ status: "step", data: result.value });
-    postNext(gen);
   }
 }

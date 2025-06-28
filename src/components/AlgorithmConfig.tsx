@@ -21,7 +21,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Play, RotateCcw } from "lucide-react";
-import { ALGORITHM_OPTIONS, ALGORITHM_CONFIG } from "@/algorithms";
+import {
+  ALGORITHM_OPTIONS,
+  ALGORITHM_CONFIG,
+  generateRandomArray,
+  type AlgorithmName,
+} from "@/algorithms";
+import { useSortWorker } from "@/hooks/useSortWorker";
+import { useEffect, useRef } from "react";
+import { drawCanvas, dropArray } from "@/utils/canvas";
 
 const formSchema = z.object({
   algorithm: z.string().min(1, "Please select an algorithm"),
@@ -44,18 +52,35 @@ const defaultValues = {
 };
 
 const AlgorithmConfig = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { start, stop, isSorting } = useSortWorker(
+    (step) => {
+      const ctx = canvasRef.current!.getContext("2d")!;
+      drawCanvas(ctx, step.array, step.highlights);
+    },
+    () => console.log("done")
+  );
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
   const onSubmit = (data: FormData) => {
-    console.log("Starting algorithm with config:", data);
+    const arr = generateRandomArray(data.arraySize);
+    start(data.algorithm as AlgorithmName, arr, data.speed);
   };
+
   const onReset = () => {
-    form.reset({
-      ...defaultValues,
-    });
+    stop();
+    if (canvasRef.current)
+      dropArray(canvasRef.current, defaultValues.arraySize);
   };
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    dropArray(canvasRef.current, form.getValues("arraySize"));
+  }, [form.watch("arraySize")]);
 
   const watchedSpeed = form.watch("speed");
   const watchedArraySize = form.watch("arraySize");
@@ -155,7 +180,7 @@ const AlgorithmConfig = () => {
               </div>
 
               <div className="flex gap-3 pt-4 border-t border-muted justify-end">
-                <Button type="submit">
+                <Button type="submit" disabled={isSorting}>
                   <Play className="mr-2 h-4 w-4" />
                   Start
                 </Button>
@@ -168,6 +193,10 @@ const AlgorithmConfig = () => {
           </Form>
         </CardContent>
       </Card>
+
+      <div className="mt-6">
+        <canvas ref={canvasRef} className="w-full h-[500px]" />
+      </div>
     </div>
   );
 };
